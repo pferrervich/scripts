@@ -36,4 +36,4 @@ sleep 5s
 
 ifconfig
 
-
+service networking restart
