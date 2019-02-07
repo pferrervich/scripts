@@ -15,11 +15,12 @@ wget http://www.accv.es/fileadmin/Archivos/software/safesign_3.0_64.tar.gz
 
 # Instal.lar Drivers targeta criptografica
 apt-get -y update
-apt-get -y install pcscd libpcsclite1 libccid libssl0.9.8
+apt-get -y install pcscd libpcsclite1 libccid libssl0.9.8 language-pack-ca
 tar -xzvf scmccid_linux_64bit_driver_V5.0.21.tar.gz
 cd scmccid_5.0.21_linux/
 sh ./install.sh
 /etc/init.d/pcscd restart
+cd ..
 
 # Instal.lar Drivers dels certificats de la targeta
 tar -xzvf safesign_3.0_64.tar.gz
@@ -34,13 +35,14 @@ dpkg -i safesign_3.0.33.amd64.deb
 # Nombre del archivo del módulo: /usr/lib/libaetpkss.so
 
 echo "Instal.lació nova versio Remmina"
+sleep 4s
 
 apt-get purge remmina
 sudo apt-add-repository ppa:remmina-ppa-team/remmina-next
 sudo apt-get -y update
 sudo apt-get -y install remmina remmina-plugin-rdp libfreerdp-plugins-standard
 
-
+echo "###### S'han instal.lat els drivers correctament ######"
 echo "Introdueix el nom d'usuari que es crearà"
 read USERNAME
 
@@ -92,20 +94,22 @@ else
   echo "No s'han pogut canviar els permisos chmod de la carpeta"
 fi
 
-ifconfig eth2 $USER_IP netmask 255.255.255.0
-echo "Quin gatweay ha de tenir?"
-read GW
-route add default gw $GW eth2
-echo "Configurant xarxa..."
-
 if sed -i '1s/.*/LANGUAGE        DEFAULT=ca:es/' /home/$USERNAME/.pam_environment; then
   echo "S'ha canviat l'idioma del sistema"
 else
   echo "No s'ha pogut canviar l'idioma del sistema"
 fi
 
+ifconfig eth0 $USER_IP netmask 255.255.255.0
+echo "Quin gatweay ha de tenir?"
+read GW
+route add default gw $GW eth0
+echo "Configurant xarxa..."
+
+
 echo "##########################################################"
 echo "########  ATENCIÓ: COMPROVAR MANUALMENT LA XARXA. ########"
 echo "### ES POT DONAR EL CAS DE QUE NO CANVÏ AUTOMATICAMENT ###"
 echo "##########################################################"
 sleep 5s
+
