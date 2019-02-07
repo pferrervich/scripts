@@ -1,6 +1,46 @@
 #!/bin/bash
+
+# https://www.accv.es/fileadmin/Archivos/manuales_tj/ubu64fxgd_c.pdf - Guia instal.lacio Drivers
+
 set -e
 echo "EXECUTAR AMB SUPERUSER"
+
+echo "Instal.lant els drivers de la targeta electrònica"
+
+sleep 4s
+
+# Descarregar Drivers
+wget http://www.accv.es/fileadmin/Archivos/software/scmccid_linux_64bit_driver_V5.0.21.tar.gz
+wget http://www.accv.es/fileadmin/Archivos/software/safesign_3.0_64.tar.gz
+
+# Instal.lar Drivers targeta criptografica
+apt-get -y update
+apt-get -y install pcscd libpcsclite1 libccid libssl0.9.8
+tar -xzvf scmccid_linux_64bit_driver_V5.0.21.tar.gz
+cd scmccid_5.0.21_linux/
+sh ./install.sh
+/etc/init.d/pcscd restart
+
+# Instal.lar Drivers dels certificats de la targeta
+tar -xzvf safesign_3.0_64.tar.gz
+dpkg -i safesign_3.0.33.amd64.deb
+
+#(a) Acceda al menú Editar > Preferencias... de Mozilla Firefox.
+#(b) Seleccione el menú Avanzado. Dentro de este menú seleccione la pestaña Cifrado y
+#pulse sobre el botón Dispositivos de Seguridad.
+#(c) Haga clic sobre el botón Cargar e introduzca los siguientes datos en la ventana que se
+#le abrirá:
+# Nombre del módulo: “ACCV G&D PKCS#11”
+# Nombre del archivo del módulo: /usr/lib/libaetpkss.so
+
+echo "Instal.lació nova versio Remmina"
+
+apt-get purge remmina
+sudo apt-add-repository ppa:remmina-ppa-team/remmina-next
+sudo apt-get -y update
+sudo apt-get -y install remmina remmina-plugin-rdp libfreerdp-plugins-standard
+
+
 echo "Introdueix el nom d'usuari que es crearà"
 read USERNAME
 
