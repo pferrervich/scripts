@@ -141,7 +141,7 @@ fi
 
 if [ $USER_SELECTION -eq 3 ]
 then
-	copyUser
+	user
 fi
 
 if [ $USER_SELECTION -eq 4 ]
