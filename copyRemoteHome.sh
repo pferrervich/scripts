@@ -35,15 +35,16 @@ drivers () {
 	tar -xzvf safesign_3.0_64.tar.gz
 	dpkg -i safesign_3.0.33.amd64.deb
 
-  echo  "En cas de que fos necessari:
-  ############################################################################################
-	(a) Acceda al menú Editar > Preferencias... de Mozilla Firefox.
-	(b) Seleccione el menú Avanzado. Dentro de este menú seleccione la pestaña Cifrado y
-	pulse sobre el botón Dispositivos de Seguridad.
-	(c) Haga clic sobre el botón Cargar e introduzca los siguientes datos en la ventana que se
-	le abrirá:
-	Nombre del módulo: “ACCV G&D PKCS#11”
-	Nombre del archivo del módulo: /usr/lib/libaetpkss.so "
+  echo  "  En cas de que fos necessari:
+  ##############################################################################################
+	# (a) Acceda al menú Editar > Preferencias... de Mozilla Firefox.                            #
+	# (b) Seleccione el menú Avanzado. Dentro de este menú seleccione la pestaña Cifrado y       #
+	# pulse sobre el botón Dispositivos de Seguridad.                                            #
+	# (c) Haga clic sobre el botón Cargar e introduzca los siguientes datos en la ventana que se #
+	# le abrirá:                                                                                 #
+	# Nombre del módulo: “ACCV G&D PKCS#11”                                                      #
+	# Nombre del archivo del módulo: /usr/lib/libaetpkss.so                                      #
+  ##############################################################################################"
 }
 
 remmina (){
@@ -92,6 +93,12 @@ user (){
 	  echo "S'ha copiat la carpeta de l'usuari"
 	else
 	  echo "No s'ha pogut copiar la carpeta remota de l'usuari"
+	fi
+
+  if ssh -t $ADMIN_R@$USER_IP "sudo chmod 755 -R /home/$USERNAME"; then
+	  echo "S'han restaurat els permisos de la carpeta remota"
+	else
+	  echo "No s'ha pogut restaurar el chmod de la carpeta d'usuari remota"
 	fi
 
 	if chown -R $USERNAME:$USERNAME /home/$USERNAME; then
