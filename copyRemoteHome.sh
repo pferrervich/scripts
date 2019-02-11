@@ -1,20 +1,27 @@
 #!/bin/bash
 
 # https://www.accv.es/fileadmin/Archivos/manuales_tj/ubu64fxgd_c.pdf - Guia instal.lacio Drivers
+# https://www.sede.fnmt.gob.es/descargas/descarga-software - Instal.lacio de drivers Crypto Key USB
 
 set -e
-echo "EXECUTAR AMB SUPERUSER"
+
+if ! [ $(id -u) = 0 ]; then
+   echo "Aquest script s'ha d'executar amb permisos ROOT!"
+   exit 1
+fi
 
 
 drivers () {
-	echo "Instal.lant els drivers de la targeta electrònica"
 	sleep 4s
 
 	# Descarregar Drivers
+  echo "Descarregant els drivers"
+  sleep 2s
 	wget http://www.accv.es/fileadmin/Archivos/software/scmccid_linux_64bit_driver_V5.0.21.tar.gz
 	wget http://www.accv.es/fileadmin/Archivos/software/safesign_3.0_64.tar.gz
 
 	# Instal.lar Drivers targeta criptografica
+  echo "Instal.lant els drivers de la targeta criptografica"
 	apt-get -y update
 	apt-get -y install pcscd libpcsclite1 libccid libssl0.9.8 language-pack-ca
 	tar -xzvf scmccid_linux_64bit_driver_V5.0.21.tar.gz
@@ -24,22 +31,22 @@ drivers () {
 	cd ..
 
 	# Instal.lar Drivers dels certificats de la targeta
+  echo "Instal.lant els certificats de la targeta"
 	tar -xzvf safesign_3.0_64.tar.gz
 	dpkg -i safesign_3.0.33.amd64.deb
 
-	#(a) Acceda al menú Editar > Preferencias... de Mozilla Firefox.
-	#(b) Seleccione el menú Avanzado. Dentro de este menú seleccione la pestaña Cifrado y
-	#pulse sobre el botón Dispositivos de Seguridad.
-	#(c) Haga clic sobre el botón Cargar e introduzca los siguientes datos en la ventana que se
-	#le abrirá:
-	# Nombre del módulo: “ACCV G&D PKCS#11”
-	# Nombre del archivo del módulo: /usr/lib/libaetpkss.so
+  echo  "En cas de que fos necessari:
+  ############################################################################################
+	(a) Acceda al menú Editar > Preferencias... de Mozilla Firefox.
+	(b) Seleccione el menú Avanzado. Dentro de este menú seleccione la pestaña Cifrado y
+	pulse sobre el botón Dispositivos de Seguridad.
+	(c) Haga clic sobre el botón Cargar e introduzca los siguientes datos en la ventana que se
+	le abrirá:
+	Nombre del módulo: “ACCV G&D PKCS#11”
+	Nombre del archivo del módulo: /usr/lib/libaetpkss.so "
 }
 
 remmina (){
-	echo "Instal.lació nova versio Remmina"
-	sleep 4s
-
 	apt-get purge remmina
 	sudo apt-add-repository ppa:remmina-ppa-team/remmina-next
 	sudo apt-get -y update
@@ -120,32 +127,52 @@ user (){
 }
 
 #################################################################################
-
-echo "Que vols fer?"
-echo "1) Instal.lar Drivers targeta electronica"
-echo "2) Instal.lar nova versio Remmina (necessari per compartir targeta)"
-echo "3) Copiar carpeta d'usuari via SSH (ha d'estar instal.lat a la maquina remota)"
-echo "4) Totes les passes anteriors"
+clear
+echo ""
+echo "Aquest script es un asistent per ajudar a instal.lar i configurar les eines"
+echo "necessaries per emprar les targetes ACCV."
+echo "Es un requeriment que la versio d'Ubuntu sigui la 14.04"
+echo ""
+echo "###################################################################################"
+echo "# Que vols fer?                                                                   #"
+echo "# 1) Instal.lar Drivers targeta electronica                                       #"
+echo "# 2) Instal.lar nova versio Remmina (necessari per compartir targeta)             #"
+echo "# 3) Copiar carpeta d'usuari via SSH (ha d'estar instal.lat a la maquina remota)  #"
+echo "# 4) Totes les passes anteriors                                                   #"
+echo "###################################################################################"
+echo ""
 
 read USER_SELECTION
 
 if [ $USER_SELECTION -eq 1 ]
 then
+  echo "Es descarregaran i instal.laran els drivers..."
+  sleep 5s
+  clear
 	drivers
 fi
 
 if [ $USER_SELECTION -eq 2 ]
 then
- 	remmina
+  echo "Es descarregara i instal.lara la darrera versio de Remmina..."
+  sleep 5s
+  clear
+  remmina
 fi
 
 if [ $USER_SELECTION -eq 3 ]
 then
+  echo "Es copiara la carpeta d'usuari..."
+  sleep 5s
+  clear
 	user
 fi
 
 if [ $USER_SELECTION -eq 4 ]
 then
+  echo "Es realitzaran totes les passes"
+  sleep 5s
+  clear
 	drivers
 	remmina
 	user
